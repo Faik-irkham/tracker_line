@@ -43,7 +43,7 @@ Butuh koneksi internet untuk memuat peta dan rute.
 | File | Isi |
 |---|---|
 | `lib/delivery/galau_story.dart` | Kalimat isi hati driver, chat, catatan driver, kartu penutup, mode malam, dan hujan |
-| `lib/delivery/trip_phase.dart` | Durasi tiap tahap (`DemoTimeline`) |
+| `lib/delivery/trip_phase.dart` | Durasi tiap tahap dan kecepatan motor (`DemoTimeline`) |
 | `lib/delivery/delivery_map_page.dart` | Lokasi restoran/customer, warna utama, data driver |
 
 ## Layanan pihak ketiga

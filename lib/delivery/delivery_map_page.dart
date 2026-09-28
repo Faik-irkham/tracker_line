@@ -71,7 +71,7 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
 
   late final AnimationController _move = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 1),
+    duration: DemoTimeline.gpsInterval,
   );
 
   late final Ticker _cameraTicker = createTicker(_onCameraTick);
@@ -218,7 +218,7 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
     await Future<void>.delayed(DemoTimeline.driverFound);
     if (cancelled()) return;
     _setPhase(TripPhase.toRestaurant);
-    await _driveLeg(toRestaurant, DemoTimeline.toRestaurant);
+    await _driveLeg(toRestaurant);
     if (cancelled()) return;
 
     _setPhase(TripPhase.pickingUp);
@@ -239,7 +239,7 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
         body: '${_driver.name} sedang menuju lokasimu',
       ),
     );
-    await _driveLeg(toCustomer, DemoTimeline.toCustomer);
+    await _driveLeg(toCustomer);
     if (cancelled()) return;
 
     _setPhase(TripPhase.arrived);
@@ -260,7 +260,7 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
     });
   }
 
-  Future<void> _driveLeg(RoutePath leg, Duration duration) {
+  Future<void> _driveLeg(RoutePath leg) {
     _stopLeg();
     _move.value = 0;
     setState(() {
@@ -273,7 +273,9 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
     _legDone = done;
     final simulator = DriverSimulator(
       totalDistance: leg.totalDistance,
-      duration: duration,
+      cruiseSpeed: DemoTimeline.cruiseSpeed,
+      slowSpeed: DemoTimeline.storySpeed,
+      shouldSlowDown: () => _thought != null || _chatStep != ChatStep.hidden,
       interval: _move.duration!,
     );
     _simulator = simulator;
@@ -333,7 +335,7 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
       }
       _playedBeats.add(i);
       if (beat.holdDriver > Duration.zero) _simulator?.pause(beat.holdDriver);
-      _showThought(beat.text, beat.duration);
+      _showThought(beat.text, beat.readingTime);
       return;
     }
   }
@@ -363,18 +365,21 @@ class _DeliveryMapPageState extends State<DeliveryMapPage>
       _banner = null;
       _chatStep = ChatStep.driverSent;
     });
-    if (!await step(ChatStep.typing, const Duration(milliseconds: 1600))) {
+    if (!await step(ChatStep.typing, const Duration(milliseconds: 1300))) {
       return;
     }
-    if (!await step(ChatStep.replied, const Duration(milliseconds: 1800))) {
+    if (!await step(ChatStep.replied, const Duration(milliseconds: 1400))) {
       return;
     }
     HapticFeedback.mediumImpact();
 
-    await Future<void>.delayed(const Duration(milliseconds: 800));
+    await Future<void>.delayed(const Duration(milliseconds: 600));
     if (cancelled()) return;
-    _showThought(GalauStory.replyThought, const Duration(milliseconds: 3800));
-    await step(ChatStep.hidden, const Duration(milliseconds: 2600));
+    _showThought(
+      GalauStory.replyThought,
+      readingTimeFor(GalauStory.replyThought),
+    );
+    await step(ChatStep.hidden, const Duration(milliseconds: 2400));
   }
 
   void _notify(BannerMessage message) {

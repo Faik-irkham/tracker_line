@@ -5,7 +5,7 @@ class StoryBeat {
     this.phase,
     this.text, {
     this.at = 0,
-    this.duration = const Duration(milliseconds: 3600),
+    this.duration,
     this.holdDriver = Duration.zero,
   });
 
@@ -15,9 +15,16 @@ class StoryBeat {
 
   final String text;
 
-  final Duration duration;
+  final Duration? duration;
 
   final Duration holdDriver;
+
+  Duration get readingTime => duration ?? readingTimeFor(text);
+}
+
+Duration readingTimeFor(String text) {
+  final ms = (1200 + text.length * 40).clamp(2400, 3600);
+  return Duration(milliseconds: ms);
 }
 
 abstract final class GalauStory {
@@ -26,7 +33,7 @@ abstract final class GalauStory {
 
   static const orderDetail = 'Nasi goreng pedas · tanpa bawang goreng';
 
-  static const chatAt = 0.58;
+  static const chatAt = 0.54;
 
   static const driverChat =
       'Mbak, saya udah dekat. Pagarnya masih yang putih kan?';
@@ -63,12 +70,12 @@ abstract final class GalauStory {
       TripPhase.toCustomer,
       'Lampu merah. Kayak kita, berhenti di tengah jalan.',
       at: 0.3,
-      holdDriver: Duration(seconds: 3),
+      holdDriver: Duration(milliseconds: 2500),
     ),
     StoryBeat(
       TripPhase.toCustomer,
       'Tenang. Profesional. Kamu cuma driver.',
-      at: 0.46,
+      at: 0.42,
     ),
     StoryBeat(
       TripPhase.toCustomer,
@@ -78,7 +85,6 @@ abstract final class GalauStory {
     StoryBeat(
       TripPhase.arrived,
       'Semoga yang sekarang nggak pernah telat jemput kamu.',
-      duration: Duration(seconds: 4),
     ),
   ];
 }

@@ -19,10 +19,12 @@ enum TripPhase {
 }
 
 abstract final class DemoTimeline {
-  static const searching = Duration(milliseconds: 3500);
-  static const driverFound = Duration(seconds: 3);
-  static const toRestaurant = Duration(seconds: 8);
-  static const pickingUp = Duration(seconds: 4);
-  static const toCustomer = Duration(seconds: 32);
-  static const beforeArrivalOverlay = Duration(milliseconds: 4200);
+  static const searching = Duration(milliseconds: 2500);
+  static const driverFound = Duration(milliseconds: 2000);
+  static const pickingUp = Duration(milliseconds: 3600);
+  static const beforeArrivalOverlay = Duration(milliseconds: 3500);
+
+  static const gpsInterval = Duration(milliseconds: 500);
+  static const cruiseSpeed = 200.0;
+  static const storySpeed = 40.0;
 }
